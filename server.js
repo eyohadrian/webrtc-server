@@ -8,7 +8,7 @@ const io = socket(server);
 const rooms = {};
 
 io.on("connection", socket => {
-  console.log("Connection")
+  console.log(`Connection - Rooms: ${JSON.stringify(rooms)}`)
   socket.on("join room", roomID => {
     if (rooms[roomID]) {
       rooms[roomID].push(socket.id);
@@ -24,7 +24,7 @@ io.on("connection", socket => {
   });
 
   socket.on("offer", payload => {
-    console.log("Offer");
+    console.log(`Offer: target - ${payload.target} ||| caller - ${payload.caller}`);
     io.to(payload.target).emit("offer", payload);
   });
 
@@ -36,7 +36,6 @@ io.on("connection", socket => {
   socket.on("ice-candidate", incoming => {
     io.to(incoming.target).emit("ice-candidate", incoming.candidate);
   });
-  console.log(socket.id)
 
   socket.on("close", roomId => {
 
